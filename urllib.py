@@ -1,6 +1,7 @@
 """Open an arbitrary URL.
 
 Adapted for Micropython by Alex Cowan <acowan@gmail.com>
+Modified by: Alexan Mardigian
 
 Includes some elements from the original urllib and urlencode libraries for Python
 """
@@ -119,13 +120,36 @@ def unquote(s):
     """Kindly rewritten by Damien from Micropython"""
     """No longer uses caching because of memory limitations"""
     res = s.split('%')
+
+    try:
+        res = _url_decode_py2(s.split('%'))
+    except NameError:
+        res = _url_decode_py3(s.split('%'))  # We're running python3.  Use this function instead.
+
+    return "".join(res)
+
+#  This function will decode a string containing URL character codes.
+#  and then return it.
+def _url_decode_py2(res):
     for i in xrange(1, len(res)):
         item = res[i]
         try:
             res[i] = chr(int(item[:2], 16)) + item[2:]
         except ValueError:
             res[i] = '%' + item
-    return "".join(res)
+
+    return res
+
+#  Same as _url_decode_py2(), but for Python 3.
+def _url_decode_py3(res):
+    for i in range(1, len(res)):
+        item = res[i]
+        try:
+            res[i] = chr(int(item[:2], 16)) + item[2:]
+        except ValueError:
+            res[i] = '%' + item
+
+    return res
 
 def unquote_plus(s):
     """unquote('%7e/abc+def') -> '~/abc def'"""
