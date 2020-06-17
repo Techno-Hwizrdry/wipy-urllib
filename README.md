@@ -17,7 +17,7 @@ There are also methods for urlencoding:
 > urllib.urlencode('abc 123')  
 > urllib.quote('abc 123')  
 > urllib.quote_plus('abc 123')  
-> urllib.unquote('abc%20123')  
+> urllib.unquote('abc%20123')  # Can now be run on both Python2 or Python3 firmware. 
 > urllib.unquote_plus('abc+123')
 
 Discussion available at http://forum.micropython.org/viewtopic.php?f=11&t=1080
